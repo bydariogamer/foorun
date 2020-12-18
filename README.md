@@ -1,4 +1,5 @@
 # foorun
+# description
 This is that silly game in which you just run and run jumping to avoid smashing your sweet face against a cactus, some obstacles or whatever.
 # dependecies
 It works with python3 and the pygame module. random might be imported to (but it is provided with python3, not needed installation).
