@@ -60,23 +60,7 @@ obst_images={
     }
 
 #define functions
-#this function might work on the future for screen blink
-"""
-def invertImg(img):
-    #Inverts the colors of a pygame Screen
 
-    img.lock()
-
-    for x in range(img.get_width()):
-        for y in range(img.get_height()):
-            RGBA = img.get_at((x,y))
-            for i in range(3):
-                # Invert RGB, but not Alpha
-                RGBA[i] = 255 - RGBA[i]
-            img.set_at((x,y),RGBA)
-
-    img.unlock()
-"""
 
 #define classes
 class Obstacle():
