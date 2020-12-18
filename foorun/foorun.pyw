@@ -1,6 +1,6 @@
 #import modules
 import pygame
-import random
+from random import randint
 
 #initialize pygame
 pygame.init()
@@ -18,9 +18,10 @@ pygame.display.set_icon(disp_ico)
 game = pygame.display.set_mode((disp_wid,disp_hei))
 
 #constants
-BLACK=(0,0,0)
-WHITE=(255,255,255)
-GRAV=4 #maybe the man gets to the moon running... what if i change it?
+BLACK =(0,0,0)
+WHITE =(255,255,255)
+GRAV = 4 #maybe the man gets to the moon running... what if i change it?
+FONT = pygame.font.Font("res/8bitOperatorPlus-Bold.ttf", 32)
 
 #images
 man0=pygame.image.load('res/man0.png')
@@ -65,9 +66,12 @@ obst_images={
 #define classes
 class Obstacle():
     def __init__(self):
-        self.distance = randint(10,100)+disp_wid #distance to obstacle
-        self.name = obst_names(randint(0,len(obst_name)-1))
-        if self.name == 'plane' :
+        if not obstacles:
+            self.distance = disp_wid + randint(50,200)
+        else:
+            self.distance = obstacles[len(obstacles)-1].distance + randint(50,200)
+        self.name = obst_names(randint(0,len(obst_names)-1))
+        if self.name == 'plane' : #self.high = randint(0, 1) if name == 'plane' else 0
             self.high=randint(0,1)
         else:
             self.high=0
@@ -117,6 +121,7 @@ while not close:
     #draw window
     game.fill(WHITE)
     pygame.draw.line(game, BLACK, (0,350), (800,350))
+    
     if alive:
         if runin: #draw the man running
             game.blit(man[anim_run[runin-1]],(50,286+chary))
@@ -125,15 +130,25 @@ while not close:
             runin += 1
         else:     #draw the man standing
             game.blit(man[0],(50,286))
-            
+        game.blit(FONT.render(str(len(obstacles)),True,WHITE),(50,50))    
         for i in range(len(obstacles)):
             obstacles[i].draw()
+            obstacles[i].colision()
+        if not obstacles:
+            obstacles[len(obstacles)]=Obstacle()
+        if obstacles:
+            if obstacles[len(obstacles)-1].distance < disp-wid:
+                obstacles[len(obstacles)]=Obstacle()
         #update window
         pygame.display.update()
         clock.tick(34)
         
+    if not alive:
+        game.fill(BLACK)
+        ender = FONT.render("YOU LOSE\nYOUR SCORE IS "+str(len(obstacles))+"\nPRESS SPACEBAR TO RETRY", True, WHITE)
+        game.blit(ender,(50,50))
+         
 #if the game finish, we just close everything:
 pygame.quit()
 print('bye')
 exit()
-
