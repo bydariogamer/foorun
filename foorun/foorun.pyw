@@ -41,7 +41,7 @@ plane=pygame.image.load('res/plane.png')
 plane.set_colorkey(WHITE)
 
 #definde game variables
-man=(ma0,man1,man2,man3)#tuple with all the man frames
+man=(man0,man1,man2,man3)#tuple with all the man frames
 close=False             #if user wants to close
 alive=True              #if you smashes your face or not
 obstacles=[]            #list of obstacles
@@ -66,8 +66,8 @@ obst_images={
 class Obstacle():
     def __init__(self):
         self.distance = randint(10,100)+disp_wid #distance to obstacle
-        self.name = obst_names(randint(0,len(obst_name)-1)
-        if self.name = 'plane':
+        self.name = obst_names(randint(0,len(obst_name)-1))
+        if self.name == 'plane' :
             self.high=randint(0,1)
         else:
             self.high=0
@@ -75,16 +75,16 @@ class Obstacle():
     def draw(self):
         if self.distance < disp_wid:
             if self.high:
-                game.blit(self.image, (120, 114+distance)
+                game.blit(self.image, (120, 114+distance))
             else:
-                game.blit(self.image, (50, 114+distance)
+                game.blit(self.image, (50, 114+distance))
     def colision(self):
         if self.distance > 0 and self.distance < 64:
             if self.high:
-                if chary > 70 and chary < 130
+                if chary > 70 and chary < 130:
                     alive=False
             else:
-                if chary < 70
+                if chary < 70:
                     alive=False
 while not close:
     #event update
@@ -111,7 +111,7 @@ while not close:
             vel_y=0
             chary=0
             jump=False
-    for i in range(len(obstacles):
+    for i in range(len(obstacles)):
         obstacles[i].distance -= vel_x
         
     #draw window
@@ -126,7 +126,7 @@ while not close:
         else:     #draw the man standing
             game.blit(man[0],(50,286))
             
-        for i in range(len(obstacles):
+        for i in range(len(obstacles)):
             obstacles[i].draw()
         #update window
         pygame.display.update()
@@ -136,3 +136,4 @@ while not close:
 pygame.quit()
 print('bye')
 exit()
+
