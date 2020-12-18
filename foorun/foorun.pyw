@@ -1,6 +1,6 @@
 #import modules
 import pygame
-from random import randint
+import random
 
 #initialize pygame
 pygame.init()
@@ -67,21 +67,21 @@ obst_images={
 class Obstacle():
     def __init__(self):
         if not obstacles:
-            self.distance = disp_wid + randint(50,200)
+            self.distance = disp_wid + random.randint(50,200)
         else:
-            self.distance = obstacles[len(obstacles)-1].distance + randint(50,200)
-        self.name = obst_names(randint(0,len(obst_names)-1))
-        if self.name == 'plane' : #self.high = randint(0, 1) if name == 'plane' else 0
-            self.high=randint(0,1)
+            self.distance = obstacles[len(obstacles)-1].distance + random.randint(50,200)
+        self.name = random.choice(obst_names)
+        if self.name == 'plane' : #self.high = random.randint(0, 1) if name == 'plane' else 0
+            self.high=random.randint(0,1)
         else:
             self.high=0
-        self.image=obst_images('name')
+        self.image=obst_images[self.name]
     def draw(self):
         if self.distance < disp_wid:
             if self.high:
-                game.blit(self.image, (120, 114+distance))
+                game.blit(self.image, (114+self.distance , 222))
             else:
-                game.blit(self.image, (50, 114+distance))
+                game.blit(self.image, (114+self.distance , 286))
     def colision(self):
         if self.distance > 0 and self.distance < 64:
             if self.high:
@@ -135,10 +135,10 @@ while not close:
             obstacles[i].draw()
             obstacles[i].colision()
         if not obstacles:
-            obstacles[len(obstacles)]=Obstacle()
+            obstacles.append(Obstacle())
         if obstacles:
-            if obstacles[len(obstacles)-1].distance < disp-wid:
-                obstacles[len(obstacles)]=Obstacle()
+            if obstacles[len(obstacles)-1].distance < disp_wid:
+                obstacles.append(Obstacle())
         #update window
         pygame.display.update()
         clock.tick(34)
