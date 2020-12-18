@@ -20,23 +20,44 @@ game = pygame.display.set_mode((disp_wid,disp_hei))
 #constants
 BLACK=(0,0,0)
 WHITE=(255,255,255)
-GRAV=4
+GRAV=4 #maybe the man gets to the moon running... what if i change it?
 
 #images
-man=(pygame.image.load('res/man0.png'),pygame.image.load('res/man1.png'),pygame.image.load('res/man2.png'),pygame.image.load('res/man3.png'))
+man0=pygame.image.load('res/man0.png')
+man0.set_colorkey(WHITE)
+man1=pygame.image.load('res/man1.png')
+man1.set_colorkey(WHITE)
+man2=pygame.image.load('res/man2.png')
+man2.set_colorkey(WHITE)
+man3=pygame.image.load('res/man3.png')
+man3.set_colorkey(WHITE)
 spike=pygame.image.load('res/spike.png')
+spike.set_colorkey(WHITE)
 cactus=pygame.image.load('res/cactus.png')
+cactus.set_colorkey(WHITE)
 dino=pygame.image.load('res/dino.png')
+dino.set_colorkey(WHITE)
+plane=pygame.image.load('res/plane.png')
+plane.set_colorkey(WHITE)
 
 #definde game variables
-close=False            #if user wants to close
-alive=True             #if you smashes your face or not
-obstc=[]               #list of obstacles
-chary=0                #the position of man to floor
-runin=0                #game started and animation
-anim_run=[1, 2, 3, 2,] #makes the animation ping-pong
-jump=False             #if man is jumping
-speed=0                #the man speed
+man=(ma0,man1,man2,man3)#tuple with all the man frames
+close=False             #if user wants to close
+alive=True              #if you smashes your face or not
+obstacles=[]            #list of obstacles
+chary=0                 #the position of man to floor
+runin=0                 #game started and animation
+anim_run=[1, 2, 3, 2,]  #makes the animation ping-pong
+jump=False              #if man is jumping
+vel_y=0                 #the man speed in Y
+vel_x=10                #the man speed in X
+obst_names=('dino','cactus','spike','plane')
+obst_images={
+    'dino':dino,
+    'cactus':cactus,
+    'spike':spike,
+    'plane':plane
+    }
 
 #define functions
 #this function might work on the future for screen blink
@@ -57,6 +78,30 @@ def invertImg(img):
     img.unlock()
 """
 
+#define classes
+class Obstacle():
+    def __init__(self):
+        self.distance = randint(10,100)+disp_wid #distance to obstacle
+        self.name = obst_names(randint(0,len(obst_name)-1)
+        if self.name = 'plane':
+            self.high=randint(0,1)
+        else:
+            self.high=0
+        self.image=obst_images('name')
+    def draw(self):
+        if self.distance < disp_wid:
+            if self.high:
+                game.blit(self.image, (120, 114+distance)
+            else:
+                game.blit(self.image, (50, 114+distance)
+    def colision(self):
+        if self.distance > 0 and self.distance < 64:
+            if self.high:
+                if chary > 70 and chary < 130
+                    alive=False
+            else:
+                if chary < 70
+                    alive=False
 while not close:
     #event update
     for event in pygame.event.get():
@@ -66,35 +111,43 @@ while not close:
             if not runin:
                 runin = 1 #start the game
             if chary==0:
-                speed = 30#jump
+                vel_y = 30#jump
                 jump = True
+            if not alive:
+                alive = True
         #if user wants to exit        
         if event.type==pygame.QUIT:
             close=True    #breaks the while loop
 
     #game logic
     if jump:
-        chary=chary-speed
-        speed=speed-GRAV
-        if speed== -30:
-            speed=0
+        chary=chary-vel_y
+        vel_y=vel_y-GRAV
+        if vel_y== -30:
+            vel_y=0
             chary=0
             jump=False
+    for i in range(len(obstacles):
+        obstacles[i].distance -= vel_x
+        
     #draw window
     game.fill(WHITE)
     pygame.draw.line(game, BLACK, (0,350), (800,350))
-    if runin:
-        game.blit(man[anim_run[runin-1]],(50,286+chary))
-        runin += 1
-        runin %= 4
-        runin += 1
-    else:
-        game.blit(man[0],(50,286))
-
-    #update window
-    pygame.display.update()
-    clock.tick(34)
-    
+    if alive:
+        if runin: #draw the man running
+            game.blit(man[anim_run[runin-1]],(50,286+chary))
+            runin += 1
+            runin %= 4
+            runin += 1
+        else:     #draw the man standing
+            game.blit(man[0],(50,286))
+            
+        for i in range(len(obstacles):
+            obstacles[i].draw()
+        #update window
+        pygame.display.update()
+        clock.tick(34)
+        
 #if the game finish, we just close everything:
 pygame.quit()
 print('bye')
