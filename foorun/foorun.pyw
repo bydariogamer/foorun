@@ -67,9 +67,9 @@ obst_images={
 class Obstacle():
     def __init__(self):
         if not obstacles:
-            self.distance = disp_wid + random.randint(50,200)
+            self.distance = disp_wid + random.randint(100,400)
         else:
-            self.distance = obstacles[len(obstacles)-1].distance + random.randint(50,200)
+            self.distance = obstacles[len(obstacles)-1].distance + random.randint(100,400)
         self.name = random.choice(obst_names)
         if self.name == 'plane' : #self.high = random.randint(0, 1) if name == 'plane' else 0
             self.high=random.randint(0,1)
@@ -115,8 +115,9 @@ while not close:
             vel_y=0
             chary=0
             jump=False
-    for i in range(len(obstacles)):
-        obstacles[i].distance -= vel_x
+    for ob in obstacles:
+        if ob is not None:
+            ob.distance -= vel_x
         
     #draw window
     game.fill(WHITE)
@@ -128,17 +129,19 @@ while not close:
             runin += 1
             runin %= 4
             runin += 1
+            if not obstacles:
+                obstacles.append(Obstacle())
+            if obstacles:
+                if obstacles[len(obstacles)-1].distance < disp_wid:
+                    obstacles.append(Obstacle())
         else:     #draw the man standing
             game.blit(man[0],(50,286))
-        game.blit(FONT.render(str(len(obstacles)),True,WHITE),(50,50))    
+        game.blit(FONT.render(str(len(obstacles)),True,BLACK),(50,50))    
         for i in range(len(obstacles)):
-            obstacles[i].draw()
-            obstacles[i].colision()
-        if not obstacles:
-            obstacles.append(Obstacle())
-        if obstacles:
-            if obstacles[len(obstacles)-1].distance < disp_wid:
-                obstacles.append(Obstacle())
+            if obstacles[i] is not None:
+                obstacles[i].draw()
+                obstacles[i].colision()
+        
         #update window
         pygame.display.update()
         clock.tick(34)
@@ -147,7 +150,10 @@ while not close:
         game.fill(BLACK)
         ender = FONT.render("YOU LOSE\nYOUR SCORE IS "+str(len(obstacles))+"\nPRESS SPACEBAR TO RETRY", True, WHITE)
         game.blit(ender,(50,50))
-         
+    for i in range(len(obstacles)):
+        if obstacles[i] is not None:
+            if obstacles[i].distance < -200:
+                obstacles[i] = None
 #if the game finish, we just close everything:
 pygame.quit()
 print('bye')
