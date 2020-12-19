@@ -43,25 +43,22 @@ plane.set_colorkey(WHITE)
 
 #definde game variables
 man=(man0,man1,man2,man3)#tuple with all the man frames
-close=False             #if user wants to close
-alive=True              #if you smashes your face or not
-obstacles=[]            #list of obstacles
-chary=0                 #the position of man to floor
-runin=0                 #game started and animation
-anim_run=[1, 2, 3, 2,]  #makes the animation ping-pong
-jump=False              #if man is jumping
-vel_y=0                 #the man speed in Y
-vel_x=10                #the man speed in X
-obst_names=('dino','cactus','spike','plane')
-obst_images={
+close = False             #if user wants to close
+alive = True
+obstacles = []            #list of obstacles
+chary = 0                 #the position of man to floor
+runin = 0                 #game started and animation
+anim_run = [1, 2, 3, 2,]  #makes the animation ping-pong
+jump = False              #if man is jumping
+vel_y = 0                 #the man speed in Y
+vel_x = 20                #the man speed in X
+obst_names = ('dino','cactus','spike','plane')
+obst_images = {
     'dino':dino,
     'cactus':cactus,
     'spike':spike,
     'plane':plane
     }
-
-#define functions
-
 
 #define classes
 class Obstacle():
@@ -76,6 +73,7 @@ class Obstacle():
         else:
             self.high=0
         self.image=obst_images[self.name]
+        self.alive=True
     def draw(self):
         if self.distance < disp_wid:
             if self.high:
@@ -83,13 +81,14 @@ class Obstacle():
             else:
                 game.blit(self.image, (114+self.distance , 286))
     def colision(self):
-        if self.distance > 0 and self.distance < 64:
+        if self.distance > -64 and self.distance < -32:
             if self.high:
-                if chary > 70 and chary < 130:
-                    alive=False
+                if chary > 70 and chary < 120:
+                    self.alive=False
             else:
-                if chary < 70:
-                    alive=False
+                if chary < 64:
+                    self.alive = False
+        
 while not close:
     #event update
     for event in pygame.event.get():
@@ -103,27 +102,28 @@ while not close:
                 jump = True
             if not alive:
                 alive = True
+                
         #if user wants to exit        
         if event.type==pygame.QUIT:
-            close=True    #breaks the while loop
+            close = True  #breaks the while loop
 
     #game logic
-    if jump:
-        chary=chary-vel_y
-        vel_y=vel_y-GRAV
-        if vel_y== -30:
-            vel_y=0
-            chary=0
-            jump=False
-    for ob in obstacles:
-        if ob is not None:
-            ob.distance -= vel_x
-        
-    #draw window
-    game.fill(WHITE)
-    pygame.draw.line(game, BLACK, (0,350), (800,350))
-    
     if alive:
+                
+        if jump:
+            chary=chary-vel_y
+            vel_y=vel_y-GRAV
+            if vel_y== -30:
+                vel_y=0
+                chary=0
+                jump=False
+        for ob in obstacles:
+            if ob is not None:
+                ob.distance -= vel_x
+            
+        #draw window
+        game.fill(WHITE)
+        pygame.draw.line(game, BLACK, (0,350), (800,350))
         if runin: #draw the man running
             game.blit(man[anim_run[runin-1]],(50,286+chary))
             runin += 1
@@ -137,23 +137,32 @@ while not close:
         else:     #draw the man standing
             game.blit(man[0],(50,286))
         game.blit(FONT.render(str(len(obstacles)),True,BLACK),(50,50))    
-        for i in range(len(obstacles)):
-            if obstacles[i] is not None:
-                obstacles[i].draw()
-                obstacles[i].colision()
+        for obs in obstacles:
+            if obs is not None:
+                obs.draw()
+                obs.colision()
         
-        #update window
-        pygame.display.update()
-        clock.tick(34)
-        
-    if not alive:
+
+        for obs in obstacles:
+            if obs is not None:
+                if not obs.alive:
+                    alive = False
+                if obs.distance < -200:
+                    obs = None    
+    else: #if not alive
+        score=len(obstacles)
+        obstacles.clear()
         game.fill(BLACK)
-        ender = FONT.render("YOU LOSE\nYOUR SCORE IS "+str(len(obstacles))+"\nPRESS SPACEBAR TO RETRY", True, WHITE)
-        game.blit(ender,(50,50))
-    for i in range(len(obstacles)):
-        if obstacles[i] is not None:
-            if obstacles[i].distance < -200:
-                obstacles[i] = None
+        game.blit(FONT.render("YOU LOSE",True,WHITE),(50,50))
+        game.blit(FONT.render("YOUR SCORE IS:",True,WHITE),(50,100))
+        game.blit(FONT.render(str(score),True,WHITE),(50,150))
+        game.blit(FONT.render("PRESS SPACEBAR TO RETRY",True,WHITE),(50,200))
+
+    #update window
+    pygame.display.update()
+    clock.tick(34)
+    
+                
 #if the game finish, we just close everything:
 pygame.quit()
 print('bye')
