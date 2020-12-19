@@ -64,9 +64,9 @@ obst_images = {
 class Obstacle():
     def __init__(self):
         if not obstacles:
-            self.distance = disp_wid + random.randint(100,400)
+            self.distance = disp_wid + random.randint(100,200)
         else:
-            self.distance = obstacles[len(obstacles)-1].distance + random.randint(100,400)
+            self.distance = obstacles[len(obstacles)-1].distance + random.randint(10*vel_x,30*vel_x)
         self.name = random.choice(obst_names)
         if self.name == 'plane' : #self.high = random.randint(0, 1) if name == 'plane' else 0
             self.high=random.randint(0,1)
@@ -83,10 +83,10 @@ class Obstacle():
     def colision(self):
         if self.distance > -64 and self.distance < -32:
             if self.high:
-                if chary > 70 and chary < 120:
-                    self.alive=False
+                if chary < -70 and chary > -120:
+                    self.alive = False
             else:
-                if chary < 64:
+                if chary > -64:
                     self.alive = False
         
 while not close:
@@ -150,7 +150,8 @@ while not close:
                 if obs.distance < -200:
                     obs = None    
     else: #if not alive
-        score=len(obstacles)
+        if obstacles:
+            score=len(obstacles)
         obstacles.clear()
         game.fill(BLACK)
         game.blit(FONT.render("YOU LOSE",True,WHITE),(50,50))
