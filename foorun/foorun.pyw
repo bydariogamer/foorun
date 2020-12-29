@@ -41,7 +41,6 @@ for img in man:
 close = False             #if user wants to close
 alive = True              #if the player is alive
 obstacles = []            #list of obstacles
-chary = 0                 #the position of man to floor
 runin = 0                 #game started and animation
 anim_run = [1, 2, 3, 2,]  #makes the animation ping-pong
 jump = False              #if man is jumping
@@ -95,11 +94,11 @@ class Obstacle():
     def colision(self):
         if self.distance > -64 and self.distance < -32:
             if self.high:
-                if chary < -70 and chary > -120:
+                if player.y < -70 and player.y > -120:
                     self.alive = False
 
             else:
-                if chary > -64:
+                if player.y > -64:
                     self.alive = False
 
                     
@@ -120,11 +119,11 @@ class Player():
     def update(self):
         if self.alive:
             if self.jump: 
-                chary = chary - vel_y
+                player.y = player.y - vel_y
                 vel_y = vel_y - GRAV
                 if vel_y== -30:
                     vel_y=0
-                    chary=0
+                    player.y=0
                     jump=False
 
         
@@ -138,9 +137,10 @@ class Tool():
         self.vel_x=0
         self.grav=0
 
+#create the character:        
+player = Player()
 
-
-        
+#game loop   
 while not close:
     #event update
     for event in pygame.event.get():
@@ -149,13 +149,13 @@ while not close:
         if event.type==pygame.KEYDOWN and event.key==pygame.K_SPACE:
             if not runin:
                 runin = 1 #start the game
-            if chary==0:
+            if player.y==0:
                 vel_y = 30#jump
                 jump = True
             if not alive:
                 alive = True
                   
-        #if user wants to exit        
+        #if user wants to exit
         if event.type==pygame.QUIT:
             close = True  #breaks the while loop
 
@@ -163,11 +163,11 @@ while not close:
     if alive:
                     
         if jump:
-            chary=chary-vel_y
+            player.y=player.y-vel_y
             vel_y=vel_y-GRAV
             if vel_y== -30:
                 vel_y=0
-                chary=0
+                player.y=0
                 jump=False
         for ob in obstacles:
             if ob is not None:
@@ -177,7 +177,7 @@ while not close:
         game.fill(WHITE)
         pygame.draw.line(game, BLACK, (0,350), (800,350))
         if runin: #draw the man running
-            game.blit(man[anim_run[runin-1]],(50,286+chary))
+            game.blit(man[anim_run[runin-1]],(50,286+player.y))
             runin += 1
             runin %= 4
             runin += 1
@@ -216,7 +216,7 @@ while not close:
     clock.tick(34)
         
                     
-    #if the game finish, we just close everything:
+#if the game finish, we just close everything:
 pygame.quit()
 print('bye')
 exit()
