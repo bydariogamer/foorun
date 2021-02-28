@@ -298,9 +298,9 @@ class Background(object):
 
     def draw(self, pause=False):
         if not pause:
-            self.camera.left += player.vel_x / 3
+            self.camera.left += player.vel_x / 5
         if self.camera.right >= self.width:
-            self.camera.left = self.camera.left - self.width
+            self.camera.left = 0
         self.gamearea.blit(self.image, (0, 0), self.camera)
         return self.gamearea
 
@@ -430,7 +430,7 @@ while not close:
     pygame.display.update()  # updates the screen
 
     # ---tick
-    dt = clock.tick(34)  # like this or like:` clock.tick(60); dt = clock.tick() ` ?
+    dt = clock.tick(60)  # like this or like:` clock.tick(60); dt = clock.tick() ` ?
 
 # game end routine
 # player.save()
