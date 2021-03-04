@@ -98,11 +98,11 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = self.images['run'][0].get_rect()
 
-        self.pos_y = 0
-        self.pos_x = 0
+        self.rect.x = 50
+        self.rect.y = DISP_HEI - 114
         self.vel_x = 20.0
         self.vel_y = 0.0
-        self.grav = 4.0
+        self.grav = 3.0
 
         self.score = 0
         self.runed = 0
@@ -129,19 +129,17 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         if self.state == 'jump':
-            self.pos_y = self.pos_y + self.vel_y
+            self.rect.y = self.rect.y - self.vel_y
             self.vel_y = self.vel_y - self.grav
-            if self.vel_y < 0 and self.pos_y <= 0:
+            if self.vel_y < 0 and self.rect.y <= DISP_HEI - 114:
                 self.vel_y = 0
-                self.pos_y = 0
+                self.rect.y = DISP_HEI - 114
                 self.state = 'run'
 
         if player.world.obstacles:
             for obstacle in player.world.obstacles:
                 if self.rect.colliderect(obstacle.rect):
                     obstacle.collision()
-
-        self.rect.topleft = (self.pos_x, self.pos_y)
 
         if self.state != 'stand' and self.state != 'dead':
             self.runed += self.vel_x/100.0
@@ -151,7 +149,7 @@ class Player(pygame.sprite.Sprite):
             self.anim += 1
             if self.anim >= len(self.images[self.state]):
                 self.anim = 0
-        game.blit(self.images[self.state][self.anim], (self.pos_x + 50, DISP_HEI - 114 - self.pos_y))
+        game.blit(self.images[self.state][self.anim], (self.rect.x, self.rect.y))
 
     def close(self):
         pass  # need to implement
@@ -166,17 +164,16 @@ class Monster(pygame.sprite.Sprite):
         self.name = 'generic_monster'
         self.image = pygame.image.load('assets/images/monster/test/monster.png')
         self.rect = self.image.get_rect()
-        self.pos_x = DISP_WID + random.randint(200, 300)
-        self.pos_y = DISP_HEI - 114
+        self.rect.x = DISP_WID + random.randint(300, 500)
+        self.rect.y = DISP_HEI - 114
         self.sound = pygame.mixer.Sound('assets/sounds/hurt.wav')
         self.collided = False
 
     def update(self):
-        self.pos_x -= player.vel_x
-        self.rect.topleft = (self.pos_x, self.pos_y)
+        self.rect.x -= player.vel_x
 
     def draw(self):
-        game.blit(self.image, (self.pos_x, self.pos_y))
+        game.blit(self.image, (self.rect.x, self.rect.y))
 
     def collision(self):
         if not self.collided:
@@ -221,7 +218,7 @@ class Plane(Monster):
         self.name = 'plane'
         self.image = pygame.image.load('assets/images/monster/plane.png')
         self.image.set_colorkey(WHITE)
-        self.pos_y = DISP_HEI - random.choice((50, 120))
+        self.rect.y = DISP_HEI - random.choice((50, 120))
 
 
 # class Item
@@ -233,17 +230,16 @@ class Item(pygame.sprite.Sprite):
         self.image = pygame.image.load('assets/images/item/test/item.png')
         self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
-        self.pos_x = DISP_WID + random.randint(200, 300)
-        self.pos_y = DISP_HEI - 114
+        self.rect.x = DISP_WID + random.randint(15*vel_x,30*vel_x)
+        self.rect.y = DISP_HEI - 114
         self.sound = pygame.mixer.Sound('assets/sounds/lifeup.wav')
         self.collided = False
 
     def update(self):
-        self.pos_x -= player.vel_x
-        self.rect.topleft = (self.pos_x, self.pos_y)
+        self.rect.x -= player.vel_x
 
     def draw(self):
-        game.blit(self.image, (self.pos_x, self.pos_y))
+        game.blit(self.image, (self.rect.x, self.rect.y))
 
     def collision(self):
         if not self.collided:
@@ -322,8 +318,7 @@ class World(object):
     def update(self):
         player.update()
         if player.state != 'stand':
-
-            if self.obstacles and self.obstacles[len(self.obstacles) - 1].pos_x < DISP_WID:
+            if self.obstacles and self.obstacles[len(self.obstacles) - 1].rect.x < DISP_WID:
                 if random.random() > player.item_chance:
                     self.obstacles.append(random.choice(self.monster_list)())
                 else:
@@ -334,19 +329,29 @@ class World(object):
                     self.obstacles.append(random.choice(self.monster_list)())
                 else:
                     random.choice(self.item_list)
-
+        if self.obstacles:
+            for obstacle in self.obstacles:
+                if obstacle is not None:
+                    obstacle.update()
+                # why is this not working as it should?
+##                if obstacle.rect.x < -64:
+##                    obstacle = None
+##                    player.score += 1
         if player.lifes <= 0:
             player.state = 'dead'
             player.world = Ender()
 
-    def draw(self, pause=False):
-        game.blit(self.background.draw(pause), (0, 0))
+    def draw(self):
+        if player.state == 'stand':
+            game.blit(self.background.draw(pause=True), (0, 0))
+        else:
+            game.blit(self.background.draw(), (0, 0))
         pygame.draw.line(game, BLACK, (0, 350), (800, 350))
-        player.draw()
         game.blit(FONT.render(str(len(self.obstacles)), True, BLACK), (50, 50))
         game.blit(FONT.render(str(int(player.runed)), True, BLACK), (200, 50))
         game.blit(FONT.render(str(player.lifes), True, BLACK), (500, 50))
         game.blit(LIFE, (550, 50))
+        player.draw()
         for obstacle in self.obstacles:
             if obstacle is not None:
                 obstacle.draw()
@@ -358,7 +363,7 @@ class World(object):
             player.state = 'run'
 
         elif not player.state == 'jump':
-            player.vel_y += 30.0
+            player.vel_y += 40.0
             player.state = 'jump'
 
 
@@ -368,7 +373,7 @@ class WorlTest(World):
 
 
 class Ender(World):
-    def __init__(self):  # need to implement
+    def __init__(self):
         super().__init__()
 
     @staticmethod
@@ -378,20 +383,20 @@ class Ender(World):
     @staticmethod
     def draw():
         game.fill(BLACK)
-        game.blit(FONT.render("YOU LOSE", True, WHITE), (50, 50))
-        game.blit(FONT.render("YOUR SCORE IS:", True, WHITE), (50, 120))
-        game.blit(FONT.render(str(player.score), True, WHITE), (50, 165))
-        game.blit(FONT.render("YOUR SCORE IS:", True, WHITE), (50, 245))
-        game.blit(FONT.render(str(player.score), True, WHITE), (50, 290))
-        game.blit(FONT.render("PRESS SPACEBAR TO RETRY", True, WHITE), (50, 360))
+        game.blit(FONT.render("YOU LOSE", True, WHITE), (50, 40))
+        game.blit(FONT.render("YOUR SCORE IS:", True, WHITE), (50, 110))
+        game.blit(FONT.render(str(player.score), True, WHITE), (50, 155))
+        game.blit(FONT.render("YOUR DISTANCE IS:", True, WHITE), (50, 235))
+        game.blit(FONT.render(str(int(player.runed)), True, WHITE), (50, 280))
+        game.blit(FONT.render("PRESS SPACEBAR TO RETRY", True, WHITE), (50, 350))
 
     @staticmethod
     def spacebar():
-        player.pos_y = 0
-        player.pos_x = 0
-        player.vel_x = 20
-        player.vel_y = 0
-        player.grav = 4
+        player.rect.x = 50
+        player.rect.y = DISP_HEI - 114
+        player.vel_x = 10.0
+        player.vel_y = 0.0
+        player.grav = 3.0
         player.score = 0
         player.runed = 0
         player.lifes = 3
@@ -430,7 +435,7 @@ while not close:
     pygame.display.update()  # updates the screen
 
     # ---tick
-    dt = clock.tick(60)  # like this or like:` clock.tick(60); dt = clock.tick() ` ?
+    dt = clock.tick(34)  # like this or like:` clock.tick(60); dt = clock.tick() ` ?
 
 # game end routine
 # player.save()
