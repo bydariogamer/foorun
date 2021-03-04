@@ -102,7 +102,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = DISP_HEI - 114
         self.vel_x = 20.0
         self.vel_y = 0.0
-        self.grav = 3.0
+        self.grav = 3.5
 
         self.score = 0
         self.runed = 0
@@ -394,9 +394,9 @@ class Ender(World):
     def spacebar():
         player.rect.x = 50
         player.rect.y = DISP_HEI - 114
-        player.vel_x = 10.0
+        player.vel_x = 20.0
         player.vel_y = 0.0
-        player.grav = 3.0
+        player.grav = 3.5
         player.score = 0
         player.runed = 0
         player.lifes = 3
