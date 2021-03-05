@@ -98,11 +98,11 @@ class Player(pygame.sprite.Sprite):
 
         self.rect = self.images['run'][0].get_rect()
 
-        self.rect.x = 50
+        self.rect.x = 20
         self.rect.y = DISP_HEI - 114
         self.vel_x = 20.0
         self.vel_y = 0.0
-        self.grav = 3.5
+        self.grav = 4
 
         self.score = 0
         self.runed = 0
@@ -168,6 +168,7 @@ class Monster(pygame.sprite.Sprite):
         self.rect.y = DISP_HEI - 114
         self.sound = pygame.mixer.Sound('assets/sounds/hurt.wav')
         self.collided = False
+        player.score += 1
 
     def update(self):
         self.rect.x -= player.vel_x
@@ -230,7 +231,7 @@ class Item(pygame.sprite.Sprite):
         self.image = pygame.image.load('assets/images/item/test/item.png')
         self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
-        self.rect.x = DISP_WID + random.randint(15*vel_x,30*vel_x)
+        self.rect.x = DISP_WID + random.randint(300, 500)
         self.rect.y = DISP_HEI - 114
         self.sound = pygame.mixer.Sound('assets/sounds/lifeup.wav')
         self.collided = False
@@ -322,13 +323,13 @@ class World(object):
                 if random.random() > player.item_chance:
                     self.obstacles.append(random.choice(self.monster_list)())
                 else:
-                    random.choice(self.item_list)
+                    self.obstacles.append(random.choice(self.item_list)())
 
             elif not self.obstacles:
                 if random.random() > player.item_chance:
                     self.obstacles.append(random.choice(self.monster_list)())
                 else:
-                    random.choice(self.item_list)
+                    self.obstacles.append(random.choice(self.item_list)())
         if self.obstacles:
             for obstacle in self.obstacles:
                 if obstacle is not None:
@@ -363,7 +364,7 @@ class World(object):
             player.state = 'run'
 
         elif not player.state == 'jump':
-            player.vel_y += 40.0
+            player.vel_y += 50.0
             player.state = 'jump'
 
 
