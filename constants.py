@@ -1,3 +1,6 @@
+import pygame
+
+
 # display
 DISP_WID = 800
 DISP_HEI = 400

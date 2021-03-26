@@ -9,6 +9,7 @@ from item import *
 from background import *
 from world import *
 from animation import *
+from constants import *
 
 
 # todo add music
