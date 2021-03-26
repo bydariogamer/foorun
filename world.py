@@ -3,13 +3,12 @@ import pygame
 import random
 import sys
 # local modules
-from player import *
 from monster import *
 from item import *
 from background import *
-from world import *
 from animation import *
 from constants import *
+from player import *
 
 
 class World(object):
@@ -79,6 +78,7 @@ class WorlTest(World):
         super().update()
         if TEST:
             player.logger()
+
 
 class Ender(World):
     def __init__(self):

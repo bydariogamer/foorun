@@ -3,13 +3,13 @@ import pygame
 import random
 import sys
 # local modules
-from player import *
 from monster import *
 from item import *
 from background import *
 from world import *
 from animation import *
 from constants import *
+from player import *
 
 
 # todo add music
@@ -31,10 +31,7 @@ game = pygame.display.set_mode((DISP_WID, DISP_HEI))
 clock = pygame.time.Clock()
 
 # ---constants
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-FONT = pygame.font.Font("assets/fonts/8bitOperatorPlus-Bold.ttf", 32)
-LIFE = pygame.image.load("assets/images/icon/life.png")
+
 LIFE.set_colorkey(WHITE)
 LIFE.convert()
 

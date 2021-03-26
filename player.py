@@ -3,7 +3,6 @@ import pygame
 import random
 import sys
 # local modules
-from player import *
 from monster import *
 from item import *
 from background import *
@@ -77,8 +76,8 @@ class Player(object):
                 self.rect.y = DISP_HEI - 114
                 self.state = 'run'
 
-        if player.world.obstacles:
-            for obstacle in player.world.obstacles:
+        if self.world.obstacles:
+            for obstacle in self.world.obstacles:
                 if self.rect.colliderect(obstacle.rect):
                     obstacle.collision()
 
@@ -97,4 +96,4 @@ class Player(object):
         pass  # need to implement
 
     def logger(self):
-        print(f"player.rect.x {self.rect.x}\nplayer.rect.y {self.rect.y}\nplayer.vel_x {self.vel_x}\nplayer.vel_y {self.vel_y}\n")
+        print(f"self.rect.x {self.rect.x}\nself.rect.y {self.rect.y}\nself.vel_x {self.vel_x}\nself.vel_y {self.vel_y}\n")
