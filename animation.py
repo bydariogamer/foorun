@@ -1,3 +1,9 @@
+# system modules
+import pygame
+import random
+import sys
+
+
 class Animation(object):
     def __init__(self, *args: pygame.Surface, pingpong=False):
         """takes any number of Surface objects to make an Animation object"""

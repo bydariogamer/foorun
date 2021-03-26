@@ -1,12 +1,19 @@
-# import modules
+# system modules
 import pygame
 import random
 import sys
-# import math
+# local modules
+from player import *
+from monster import *
+from item import *
+from background import *
+from world import *
+from animation import *
+
 
 # todo add music
 # todo add characters
-# todo change sp eed with distance
+# todo change speed with distance
 
 """this game is an infinite-running where you have to avoid
 smashing your sweet face against absurd obstacles"""
@@ -15,18 +22,12 @@ smashing your sweet face against absurd obstacles"""
 pygame.init()
 pygame.mixer.init()
 
-# set window mesures, title, icon
-DISP_WID = 800
-DISP_HEI = 400
-DISP_TIT = 'FOORUN'
-DISP_ICO = pygame.image.load('assets/images/icon/icon.png')
-BASE_FPS = 60
-clock = pygame.time.Clock()
 
 # ---initialize window
 pygame.display.set_caption(DISP_TIT)
 pygame.display.set_icon(DISP_ICO)
 game = pygame.display.set_mode((DISP_WID, DISP_HEI))
+clock = pygame.time.Clock()
 
 # ---constants
 BLACK = (0, 0, 0)
@@ -36,9 +37,6 @@ LIFE = pygame.image.load("assets/images/icon/life.png")
 LIFE.set_colorkey(WHITE)
 LIFE.convert()
 
-# ---test mode
-
-TEST = False
 
 # create the character:
 

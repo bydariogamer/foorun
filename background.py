@@ -1,3 +1,9 @@
+# system modules
+import pygame
+import random
+import sys
+
+
 class Background(object):
     def __init__(self, image: pygame.Surface or str):
         """pass a surface to create a new background"""

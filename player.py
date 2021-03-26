@@ -1,3 +1,9 @@
+# system modules
+import pygame
+import random
+import sys
+
+
 class Player(object):
     """class Player, for the game character. It will download the progress using something else than pickle"""
 
@@ -20,7 +26,7 @@ class Player(object):
 
         for key in self.images:
             for image in self.images[key]:
-                image.set_colorkey(WHITE)
+                image.set_colorkey((0,0,0))
                 image.convert()
 
         self.rect = self.images['run'][0].get_rect()

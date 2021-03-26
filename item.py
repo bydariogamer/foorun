@@ -1,10 +1,16 @@
+# system modules
+import pygame
+import random
+import sys
+
+
 class Item(object):
 
     def __init__(self):
         super().__init__()
         self.name = 'generic_item'
         self.image = pygame.image.load('assets/images/item/test/item.png')
-        self.image.set_colorkey(WHITE)
+        self.image.set_colorkey((0, 0, 0))
         self.rect = self.image.get_rect()
         self.rect.x = DISP_WID + random.randint(300, 500)
         self.rect.y = DISP_HEI - 114
@@ -35,14 +41,14 @@ class Life(Item):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('assets/images/item/life.png')
-        self.image.set_colorkey(WHITE)
+        self.image.set_colorkey((0, 0, 0))
 
 
 class Coin(Item):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('assets/images/item/coin.png')
-        self.image.set_colorkey(WHITE)
+        self.image.set_colorkey((0, 0, 0))
         self.sound = pygame.mixer.Sound('assets/sounds/coin.mp3')
 
     def collision(self):

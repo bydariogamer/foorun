@@ -1,3 +1,9 @@
+# system modules
+import pygame
+import random
+import sys
+
+
 class World(object):
     def __init__(self):
         self.background = BackgroundTest()

@@ -1,3 +1,9 @@
+# system modules
+import pygame
+import random
+import sys
+
+
 class Monster(object):
     """This is a generic class for monster sprites"""
 
@@ -36,7 +42,7 @@ class Cactus(Monster):
         super().__init__()
         self.name = 'cactus'
         self.image = pygame.image.load('assets/images/monster/cactus.png')
-        self.image.set_colorkey(WHITE)
+        self.image.set_colorkey((0, 0, 0))
 
 
 class Dino(Monster):
@@ -44,7 +50,7 @@ class Dino(Monster):
         super().__init__()
         self.name = 'dino'
         self.image = pygame.image.load('assets/images/monster/dino.png')
-        self.image.set_colorkey(WHITE)
+        self.image.set_colorkey((0, 0, 0))
 
 
 class Spike(Monster):
@@ -52,7 +58,7 @@ class Spike(Monster):
         super().__init__()
         self.name = 'spike'
         self.image = pygame.image.load('assets/images/monster/spike.png')
-        self.image.set_colorkey(WHITE)
+        self.image.set_colorkey((0, 0, 0))
 
 
 class Plane(Monster):
@@ -60,5 +66,5 @@ class Plane(Monster):
         super().__init__()
         self.name = 'plane'
         self.image = pygame.image.load('assets/images/monster/plane.png')
-        self.image.set_colorkey(WHITE)
+        self.image.set_colorkey((0, 0, 0))
         self.rect.y = DISP_HEI - random.choice((50, 120))
